@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  agricure-backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: agricure-backend:latest
+    container_name: agricure-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./models:/app/models:ro  # Read-only mount for models
+      - ./static:/app/static:ro  # Read-only mount for static files
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - agricure-network
+
+networks:
+  agricure-network:
+    driver: bridge
+
+# For production deployment with reverse proxy
+# Uncomment the following section if you want to use nginx as reverse proxy
+
+# nginx:
+#   image: nginx:alpine
+#   container_name: agricure-nginx
+#   ports:
+#     - "80:80"
+#     - "443:443"
+#   volumes:
+#     - ./nginx.conf:/etc/nginx/nginx.conf:ro
+#     - ./ssl:/etc/nginx/ssl:ro  # SSL certificates
+#   depends_on:
+#     - agricure-backend
+#   restart: unless-stopped
+#   networks:
+#     - agricure-network
