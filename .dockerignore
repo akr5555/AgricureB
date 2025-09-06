@@ -21,12 +21,17 @@ coverage.xml
 .pytest_cache
 .hypothesis
 
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
 # Environment files
 .env
 .env.local
 .env.production
 .env.test
-.venv/
 
 # IDEs
 .vscode/
